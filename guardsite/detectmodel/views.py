@@ -37,7 +37,7 @@ def models(image):
         dan_output = danger_session.run([danger_output_name], danger_input_data)[0]
         return label_v5[np.argmax(dan_output)]
     else:
-        return 'None'
+        return 'Safe'
     #dan_prediction = dan_output.squeeze(0)
 
 
@@ -59,8 +59,7 @@ def danger_post(request):
             context = {'images': danger_form.image,
                        'danger': predictions, 
                        'area':danger_form.area}
-            if predictions=='None':
-                return render(request, 'detectmodel/checked.html', context)
+            
             danger_form.save()
             return render(request, 'detectmodel/checked.html', context)
     else:
