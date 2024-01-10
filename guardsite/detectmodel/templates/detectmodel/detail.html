@@ -35,6 +35,7 @@
           <div class="card-body">
             <h2 class="card-title">작업 구역 : {{ danger.area }}</h2>
             <p class="card-text"> 5대 분류 : {{ danger.danger }}</p>
+            <p class="card-text"> 일시 : {{ danger.created_at}}</p>
             <div class="flex items-center justify-end">
             
             <a href="{% url 'detectmodel:index' %}" id="button-color" class="btn">뒤로가기</a>

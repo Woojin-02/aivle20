@@ -13,16 +13,23 @@
     <title>My Bulletin Board</title>
     
     <style>
-        .contentarea{
+.contentarea{
           height:250px;
         }
-        .delete-button{
+.delete-button{
           justify-content: space-evenly;
           
           
 
           
         }
+.submit-button {
+    border-radius:20px;
+    padding: 10px 30px;
+    font-size: 1.0em;
+    background-color:#ffffff;
+    border: 1px solid #719FD6;
+}
     </style>
 </head>
 <script src="https://cdn.tailwindcss.com"></script>
@@ -46,11 +53,11 @@
                 {% if user.role == 'admin' %}
                 <hr style="margin-top:10px; margin-bottom:10px;">
                 <div class="flex items-center justify-between">
-                    <button class="bg-blue-400 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                    <button class="submit-button" type="button">
                       <a  href="{% url 'communities:update' notice.pk %}">수정</a>
                     </button>
                     
-                    <button class="bg-blue-400 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                    <button class="submit-button" type="button">
                       <form action="{% url 'communities:delete' notice.pk %}" method="POST" style="display: inline;">
                         {% csrf_token %}
                             <input type="submit" value="삭제", onclick="return confirm('진짜로 지울래?')" >
@@ -69,7 +76,9 @@
                     
                     <div class="flex items-center justify-between">
                     
-                      {{ comment.user }} : {{ comment.content }}
+                      <div>
+                        <p>{{ comment.user }}: {{ comment.content }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ {{ comment.created_at|date:"Y.m.d H:i" }} ]</p>
+                      </div>
                           {% if request.user == comment.user %}
                         <form action="{% url 'communities:comments_delete' notice.pk comment.pk %}" method="POST" >
                           {% csrf_token %}
@@ -94,9 +103,9 @@
                         <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="comments" placeholder="댓글쓰기" name='content'></textarea>
                       </div>
                     <div class="flex items-center justify-between">
-                      <button class="bg-blue-400 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+                      <button class="submit-button" type="button">
                       <a href="{% url 'communities:index' %}" >목록</a></button>
-                    <input class="bg-blue-400 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit"
+                    <input class="submit-button" type="submit"
                           value='댓글달기'/>
                       
                   </div>
