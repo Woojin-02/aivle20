@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 # Create your views here.
 def models(image):
-    bi_path = "models/best_binary_weights.onnx"
+    bi_path = "models/best_binary_9.onnx"
     danger_path = "models/best_5danger.onnx"
     #img_path = 'img/a.jpg'
     label_v5 = ['Fall','Drop','Crash','Fire','Electric']
@@ -56,12 +56,12 @@ def danger_post(request):
                 danger=predictions,
                 area=danger_form.area
             )
-            danger_form.save()
-
             context = {'images': danger_form.image,
                        'danger': predictions, 
                        'area':danger_form.area}
-
+            if predictions=='None':
+                return render(request, 'detectmodel/checked.html', context)
+            danger_form.save()
             return render(request, 'detectmodel/checked.html', context)
     else:
         form = DangerForm()
