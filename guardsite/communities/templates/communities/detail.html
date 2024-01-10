@@ -76,7 +76,9 @@
                     
                     <div class="flex items-center justify-between">
                     
-                      {{ comment.user }} : {{ comment.content }}
+                      <div>
+                        <p>{{ comment.user }}: {{ comment.content }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ {{ comment.created_at|date:"Y.m.d H:i" }} ]</p>
+                      </div>
                           {% if request.user == comment.user %}
                         <form action="{% url 'communities:comments_delete' notice.pk comment.pk %}" method="POST" >
                           {% csrf_token %}
