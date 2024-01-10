@@ -6,9 +6,9 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>안전점검
-        </title>
-    
+
+    <title>안전 이상무 </title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,7 +39,7 @@
                 <div class="headframe" id="hf">
                     <a class="navbar-brand" href="#">
                         <img src="{% static 'images\safety.png'%}" alt="안전" width="50" heigth="50" class="d-inline-block align-text-top">
-                        안전지킴이 오공
+                        안전 이상무
                     </a>
                     <div class="name" >
                         {{ user.username|slice:":1" }}**님
@@ -61,13 +61,17 @@
                     </div>
                     <div>
                     
-                            <img class="nav-image" src="{% static 'images\cam.png'%}" alt="카메라" id="DetectImage"/ >
+                            <img class="nav-image" src="{% static 'images\camera.png'%}" alt="카메라" id="DetectImage"/ >
                         </a>
                     </div>
                     <div>
-                        <a href="{% url 'showreport:checklist_board' %}" class="nav-link">
-                            <img class="nav-image" src="{% static 'images\check.png'%}" alt="체크"/>
-                        </a>
+                        {% if user.role == 'worker' %}
+                            <img class="nav-image" src="{% static 'images\checklist.png'%}" alt="체크" onclick="showToast()"/>
+                        {% elif user.role == 'admin' %}
+                            <a href="{% url 'showreport:checklist_board' %}" class="nav-link">
+                                <img class="nav-image" src="{% static 'images\checklist.png'%}" alt="체크"/>
+                            </a>
+                        {% endif %}
                     </div>
                     <div>
                         <a href="{% url 'communities:index' %}" class="nav-link">
@@ -76,7 +80,7 @@
                     </div>
                     <div>
                         <!-- 프로필 이미지 -->
-                        <img class="nav-image" src="{% static 'images/user.png' %}" alt="Your Image" id="profileImage">
+                        <img class="nav-image" src="{% static 'images/userimage.png' %}" alt="Your Image" id="profileImage">
                     </div>
                 </div>
             </footer>
@@ -90,7 +94,7 @@
                 {% csrf_token %}
                 <div class='logo'>
                     <img src="{% static 'images\safety.png'%}" alt="안전" width="50" heigth="50" class="d-inline-block align-text-top" style='margin-bottom:10px;' id='logo'>
-                    <label for='logo' ><h1 style='font-size:30px;'>안전지킴이 오공</h1></label>
+                    <label for='logo' ><h1 style='font-size:30px;'>안전 이상무</h1></label>
                 </div>
                 <div class='submitbox bs4-submits'>
                     <input type="text" name="area" placeholder='장소' maxlength="20" required id="id_area" class='area'>
@@ -238,6 +242,13 @@
           }
         }
         
+    </script>
+
+    <script>
+        function showToast() {
+            // 여기에 토스트 메시지를 표시하는 JavaScript 코드 작성
+            alert('접근 권한이 없습니다');
+        }
     </script>
 
     {% block script %}

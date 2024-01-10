@@ -5,11 +5,22 @@
 <style>
 .head-co{
     margin-top:5rem;
-
+}
 #button-color{
     background-color:#B3D8FF;
 }
+.submit-button {
+    border-radius:20px;
+    padding: 10px 30px;
+    font-size: 1.0em;
+    background-color:#ffffff;
+    border: 1px solid #719FD6;
 }
+
+a {
+    text-decoration-line:none;
+    color:black;
+    }
 
 </style>
 {% endblock %}
@@ -36,11 +47,13 @@
                         <textarea type="text" class="form-control" name="content" id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <a href="{% url 'communities:index' %}" class="btn" id ="button-color">목록</a>
-                    <div class="float-end">
-                        <button type="submit" class="btn" id ="button-color">등록</button>
-                    </div>
+                <div class="card-footer d-flex items-center justify-content-between">
+                   
+                    <a href="{% url 'communities:index' %}" class =" btn submit-button" >목록</a>
+                    
+                    
+                    <button type="submit" class="submit-button" >등록</button>
+                    
                 </div>
             </div>
         </form>
