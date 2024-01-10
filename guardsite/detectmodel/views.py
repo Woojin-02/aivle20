@@ -33,7 +33,7 @@ def models(image):
     bi_output = bi_session.run([bi_output_name], bi_input_data)[0]
     #bi_prediction = bi_output.squeeze(0)
     # 5가지 위험 요소 분류 모델 추론
-    if(label_v5[np.argmax(bi_output)]):
+    if(np.argmax(bi_output)):
         dan_output = danger_session.run([danger_output_name], danger_input_data)[0]
         return label_v5[np.argmax(dan_output)]
     else:
