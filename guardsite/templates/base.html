@@ -38,7 +38,7 @@
             <header>
                 <div class="headframe" id="hf">
                     <a class="navbar-brand" href="#">
-                        <img src="{% static 'images\safety.png'%}" alt="안전" width="50" height="40" class="d-inline-block align-text-top">
+                        <img src="{% static 'images\safety.png'%}" alt="안전" width="50" heigth="50" class="d-inline-block align-text-top">
                         안전지킴이 오공
                     </a>
                     <div class="name" >
@@ -89,7 +89,7 @@
             <form method="post" enctype="multipart/form-data" action='{% url 'detectmodel:danger_post' %}' class='preview-image'>
                 {% csrf_token %}
                 <div class='logo'>
-                    <img src="{% static 'images\safety.png'%}" alt="안전" width="50" height="40" class="d-inline-block align-text-top" style='margin-bottom:10px;' id='logo'>
+                    <img src="{% static 'images\safety.png'%}" alt="안전" width="50" heigth="50" class="d-inline-block align-text-top" style='margin-bottom:10px;' id='logo'>
                     <label for='logo' ><h1 style='font-size:30px;'>안전지킴이 오공</h1></label>
                 </div>
                 <div class='submitbox bs4-submits'>
