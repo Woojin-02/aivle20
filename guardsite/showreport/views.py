@@ -5,6 +5,7 @@ from django.urls import reverse
 import openai
 from datetime import datetime
 from .models import ChecklistEntry, Checklist
+from detectmodel.models import DangerModel
 from .forms import ChecklistForm
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -12,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 
 # OpenAI API 키 설정
-openai.api_key = 'YOUR_API_KEY'
+openai.api_key = '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'
 
 
 @login_required
@@ -34,20 +35,47 @@ def get_openai_results(request):
                 -현장 정리정돈 상태
                 -긴급 상황 대비 비상연락망 관리 상태"""
                 
-    # 데이터 저장
-    data = [
-        {"user": "a", "danger": ["추락", "협착"], "create_at": "2023-12-12", "area": "2층", "y/n": "y"},
-        {"user": "b", "danger": ["낙하"], "create_at": "2023-12-12", "area": "1층", "y/n": "y"},
-        {"user": "c", "danger": ["추락", "화재", "전도"], "create_at": "2023-12-12", "area": "야외", "y/n": "y"},
+    # 위험 유형 매핑 딕셔너리
+    danger_mapping = {
+        'Fall': '추락',
+        'Drop': '낙하',
+        'Crash': '협착',
+        'Fire': '화재',
+        'Electric': '전도',
+}
+                
+    db_data = DangerModel.objects.all()
+    
+    # data = [
+    #     {"user": "A", "danger": [danger_mapping[d] for d in item.danger.split(',')], "created_at": item.create_at, "area": item.area, "y/n": "y"}
+    #     for item in db_data
+    # ]
+    
+                
+    # # 데이터 저장
+    # data = [
+    #     {"user": "a", "danger": ["추락", "협착"], "create_at": "2023-12-12", "area": "2층", "y/n": "y"},
+    #     {"user": "b", "danger": ["낙하"], "create_at": "2023-12-12", "area": "1층", "y/n": "y"},
+    #     {"user": "c", "danger": ["추락", "화재", "전도"], "create_at": "2023-12-12", "area": "야외", "y/n": "y"},
         
-        # 추락, 협착, 전도, 낙하, 화재
-    ]
+    #     # 추락, 협착, 전도, 낙하, 화재
+    # ]
+    
+    print(data)
 
+    # # user_messages 생성
+    # user_messages = [
+    #     {"role": "system", "content": prompt_text},
+    # ] + [
+    #     {"role": "user", "content": f"User: {item['user']}, Danger: {', '.join(item['danger'])}, Create_at: {item['create_at']}, work area: {item['area']}, Y/N: {item['y/n']}"}
+    #     for item in data
+    # ]
+    
     # user_messages 생성
     user_messages = [
         {"role": "system", "content": prompt_text},
     ] + [
-        {"role": "user", "content": f"User: {item['user']}, Danger: {', '.join(item['danger'])}, Create_at: {item['create_at']}, work area: {item['area']}, Y/N: {item['y/n']}"}
+        {"role": "user", "content": f"User: 'a', Danger: {', '.join(item['danger'])}, work area: {item['area']}, Y/N: {item['y/n']}"}
         for item in data
     ]
     
@@ -60,11 +88,13 @@ def get_openai_results(request):
         temperature=0.2,  # 문장 다양성 조절
         max_tokens=1024  # 생성 문장의 최대 길이
     )
+    
+    print(response)
 
     # 생성된 문장에서 "True" 또는 "False"를 추출
     generated_text = response['choices'][0]['message']['content'].strip().lower()
     
-    print(generated_text)
+    print("generated_text", generated_text)
     
     save_to_database(request, generated_text)  # request를 전달
     
@@ -155,12 +185,7 @@ def display_checklist(request, date):
     else:
         # GET 요청에 대한 처리
         form = ChecklistForm()
-        print("N")
 
     # return redirect('showreport:checklist_board')
     return render(request, 'report/report.html', {'checklist_items': checklist_items, 'current_date': date})
 
-    # return render(request, 'report/report.html', {'checklist_items': results})
-    
-    
-# def save_report(requeste):
