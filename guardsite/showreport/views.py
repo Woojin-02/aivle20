@@ -46,36 +46,27 @@ def get_openai_results(request):
                 
     db_data = DangerModel.objects.all()
     
-    # data = [
-    #     {"user": "A", "danger": [danger_mapping[d] for d in item.danger.split(',')], "created_at": item.create_at, "area": item.area, "y/n": "y"}
-    #     for item in db_data
-    # ]
-    
-                
-    # # 데이터 저장
-    # data = [
-    #     {"user": "a", "danger": ["추락", "협착"], "create_at": "2023-12-12", "area": "2층", "y/n": "y"},
-    #     {"user": "b", "danger": ["낙하"], "create_at": "2023-12-12", "area": "1층", "y/n": "y"},
-    #     {"user": "c", "danger": ["추락", "화재", "전도"], "create_at": "2023-12-12", "area": "야외", "y/n": "y"},
-        
-    #     # 추락, 협착, 전도, 낙하, 화재
-    # ]
+    # 사용자 라벨 목록
+    user_labels = ["A", "B", "C"]
+
+    data = [
+        {
+            "user": user_labels[i % len(user_labels)],  # 번갈아가며 라벨 할당
+            "danger": [danger_mapping[d] for d in item.danger.split(',')],
+            "create_at": item.created_at.strftime('%Y-%m-%d'),
+            "area": item.area,
+            "y/n": "y"
+        }
+        for i, item in enumerate(db_data)
+    ]
     
     print(data)
-
-    # # user_messages 생성
-    # user_messages = [
-    #     {"role": "system", "content": prompt_text},
-    # ] + [
-    #     {"role": "user", "content": f"User: {item['user']}, Danger: {', '.join(item['danger'])}, Create_at: {item['create_at']}, work area: {item['area']}, Y/N: {item['y/n']}"}
-    #     for item in data
-    # ]
     
     # user_messages 생성
     user_messages = [
         {"role": "system", "content": prompt_text},
     ] + [
-        {"role": "user", "content": f"User: 'a', Danger: {', '.join(item['danger'])}, work area: {item['area']}, Y/N: {item['y/n']}"}
+        {"role": "user", "content": f"User: {item['user']}, Danger: {', '.join(item['danger'])}, Create_at: {item['create_at']}, work area: {item['area']}, Y/N: {item['y/n']}"}
         for item in data
     ]
     
@@ -140,7 +131,7 @@ def save_to_database(request, generated_text):
     
     
 def checklist_board(request):
-    items_per_page = 10
+    items_per_page = 6
     page = request.GET.get("page",1)
 
     # 중복 제거 및 정렬된 날짜 가져오기

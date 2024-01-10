@@ -87,7 +87,7 @@ DATABASES = {
         # MYSQL 정보
         'NAME': 'test2',
         'USER': 'root',
-        'PASSWORD': 'admin1234',
+        'PASSWORD': 'aivle',
         'HOST': 'localhost',
         'PORT': '3306',
     }
