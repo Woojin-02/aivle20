@@ -41,7 +41,7 @@ def get_openai_results(request):
         'Drop': '낙하',
         'Crash': '협착',
         'Fire': '화재',
-        'Electric': '전도',
+        'Overthrow': '전도',
 }
                 
     db_data = DangerModel.objects.all()
