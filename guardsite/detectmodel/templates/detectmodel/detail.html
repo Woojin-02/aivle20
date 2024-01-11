@@ -24,6 +24,13 @@
 
     object-fit:cover;
 }
+.submit-button {
+    border-radius:20px;
+    padding: 10px 30px;
+    font-size: 1.0em;
+    background-color:#ffffff;
+    border: 1px solid #719FD6;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -38,7 +45,7 @@
             <p class="card-text"> 일시 : {{ danger.created_at}}</p>
             <div class="flex items-center justify-end">
             
-            <a href="{% url 'detectmodel:index' %}" id="button-color" class="btn">뒤로가기</a>
+            <a href="{% url 'detectmodel:index' %}" class="btn submit-button">뒤로가기</a>
             </div>
         </div>
         </div>
