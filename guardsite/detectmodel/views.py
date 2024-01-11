@@ -10,8 +10,8 @@ from django.core.paginator import Paginator
 def models(image):
     bi_path = "models/best_binary_9.onnx"
     danger_path = "models/best_5danger.onnx"
-    #img_path = 'img/a.jpg'
-    label_v5 = ['Fall','Drop','Crash','Fire','Electric']
+    
+    label_v5 = ['Fall','Drop','Crash','Fire','Overthrow']
     # 모델 불러오기
     bi_session = ort.InferenceSession(bi_path)
     danger_session = ort.InferenceSession(danger_path)
@@ -31,14 +31,15 @@ def models(image):
     danger_input_data = {danger_input_name: image_array}
     # 이진 분류 모델 추론
     bi_output = bi_session.run([bi_output_name], bi_input_data)[0]
-    #bi_prediction = bi_output.squeeze(0)
     # 5가지 위험 요소 분류 모델 추론
+    
     if(np.argmax(bi_output)):
         dan_output = danger_session.run([danger_output_name], danger_input_data)[0]
+        print(dan_output)
         return label_v5[np.argmax(dan_output)]
     else:
         return 'Safe'
-    #dan_prediction = dan_output.squeeze(0)
+    
 
 
 # 이미지 업로드 및 결과 표시 뷰
