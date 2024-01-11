@@ -24,8 +24,6 @@ urlpatterns = [
     path('', views.main_page, name='main'),
     path('accounts/',include('accounts.urls'), name='accounts'),
     path('communities/',include('communities.urls')),
-    path('safetydetects/',include('safetydetects.urls',namespace='safetdetects')),
-    path('ai_analysis/',include('ai_analysis.urls',namespace='ai_analysis')),
     path('showreport/', include('showreport.urls')),
     path('detect/',include('detectmodel.urls')),
 ]

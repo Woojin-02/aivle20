@@ -41,8 +41,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'communities',
-    'safetydetects',
-    'ai_analysis',
     'showreport',
     'detectmodel',
 ]
@@ -87,7 +85,7 @@ DATABASES = {
         # MYSQL 정보
         'NAME': 'aivle',
         'USER': 'root',
-        'PASSWORD': 'aivle',
+        'PASSWORD': 'admin1234',
         'HOST': 'localhost',
         'PORT': '3306',
     }
