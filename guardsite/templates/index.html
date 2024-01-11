@@ -3,24 +3,28 @@
 {% load static %}
 
 {% block style %}
+<style>
+.container{
+margin-top:20rem;
+
+}
+
+.mainimage{
+ margin :auto;
+}
+</style>
+
 {% endblock %}
 {% block content %}
 
-
-{% for danger in dangers %}
+<div class="container">
         
-        <div class="card mb-4">
-          <img class="card-img-top" src="{{ danger.image.url }}" alt="Card image cap">
-          <div class="card-body">
-            <h2 class="card-title">{{ danger.area }}</h2>
-            <p class="card-text">{{ danger.danger }}</p>
-            <a href="{{ danger.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>
+          <div>        
+          <img class="mainimage" src="{% static 'images\indeximage.png'%}" alt="Card image cap" >
+          
+          
+          
           </div>
-          <div class="card-footer text-muted">
-            
-            상세보기
-          </div>
-        </div>
-        {% endfor %}
+</div>
 
 {% endblock %}
