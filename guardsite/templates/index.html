@@ -5,10 +5,16 @@
 {% block style %}
 <style>
 .container{
+
 margin-top:20rem;
 
 }
 
+.container img {
+  width:100%;
+  height:40%;
+  object-fit:cover;
+}
 .mainimage{
  margin :auto;
 }
@@ -20,7 +26,7 @@ margin-top:20rem;
 <div class="container">
         
           <div>        
-          <img class="mainimage" src="{% static 'images\indeximage.png'%}" alt="Card image cap" >
+          <img class="mainimage" src="{% static 'images\mainimage.png'%}" alt="Card image cap" >
           
           
           
