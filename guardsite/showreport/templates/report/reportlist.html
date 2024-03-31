@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>체크리스트 게시판</title>
+    <!-- 스타일 등 필요한 부분 추가 -->
+    <style>
+        .container{
+            margin-top:90px;
+        }
+        .top-nav{
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        .top-nav .title-text{
+            font-size:20px;
+        }
+        .top-nav .submit-button{
+            border-radius: 20px;
+            padding: 10px 30px;
+            top: 120px;
+            right: 70px;
+            font-size: 1.0em;
+            background-color: #ffffff;
+            border: 1px solid #719FD6;
+        }
+        .link-text{
+            text-decoration: none;
+            color: black;
+            font-size: 1.4em; 
+        }
+        .checklist{
+            list-style-type: none;
+            padding: 0;
+        }
+        .page-link {
+            color: #000; 
+            background-color: #fff;
+            border: 1px solid #ccc; 
+        }
+        
+        .page-item.active .page-link {
+            z-index: 1;
+            color: #555;
+            font-weight:bold;
+            background-color: #f1f1f1;
+            border-color: #ccc;
+        }
+        
+        .page-link:focus, .page-link:hover {
+            color: #000;
+            background-color: #fafafa; 
+            border-color: #ccc;
+        }
+        
+    </style>
+</head>
+
+{% endblock %}
+{% block content %}
+
+<body>
+    <div class='container'>
+        <div class='top-checklist'>
+            <form method='get' action='{% url 'showreport:make_checklist' %}' class='top-nav'>
+                {% csrf_token %}
+                <span class="title-text">체크리스트</span>
+                <input class='submit-button' type='submit' value='만들기'>
+            </form>
+        </div>
+        <hr>
+        <div class='page-checklist'>
+            <ul class='checklist'>
+                {% if page%}
+                {% for entry in page %}
+                    <li>
+                        <a href="{% url 'showreport:display_checklist' date=entry.create_at %}" class='link-text'>
+                            {{ entry.create_at|date:"Y-m-d" }} 체크리스트
+                        </a>
+                    </li>
+                    <hr>
+                {% endfor %}
+                {% else %}
+                        <tr>
+                            <td colspan="4">등록된 글이 없습니다.</td>
+                        </tr>
+                {% endif %}
+            </ul>
+        </div>
+    
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <!-- 이전 페이지 -->
+                {% if page.has_previous %}<!-- 이전 페이지 있음 -->
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page.previous_page_number }}">이전</a>
+                    </li>
+                {% else %}<!-- 이전 페이지 없음 -->
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+                    </li>
+                {% endif %}
+
+                <!-- 페이지 리스트 -->
+                {% for page_number in page.paginator.page_range %}
+                    <!-- 현재 페이지를 기준으로 좌우 5개씩 보이도록 처리 -->
+                    {% comment %} {% if page_number >= notipageces.number|add:-5 and page_number <=page.number|add:5 %} {% endcomment %}
+                        {% if page_number == page.number %}<!-- 현재 페이지 번호와 같음 -->
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                            </li>
+                        {% else %}<!-- 현재 페이지 번호와 다름 -->
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                            </li>
+                        {% endif %}
+                    {% comment %} {% endif %} {% endcomment %}
+                {% endfor %}
+
+                <!-- 다음 페이지 -->
+                {% if page.has_next %}<!-- 다음 페이지 있음 -->
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page.next_page_number }}">다음</a>
+                    </li>
+                {% else %}<!-- 다음 페이지 없음 -->
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <!--// 페이징 -->
+
+</body>
+</html>
+{% endblock %}
+

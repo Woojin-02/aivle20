@@ -1,0 +1,256 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>안전 이상무 </title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Sunflower:wght@300&display=swap" rel="stylesheet">  
+    <link href="https://fonts.googleapis.com/css2?family=Dongle&family=Roboto+Slab:wght@400;700&family=Sunflower:wght@300&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css\basestyle.css'%}"> <!-- CSS 파일 링크 -->
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">  <!-- modal.css 파일 링크 -->
+    <link rel="stylesheet" href="{% static 'css/upload.css' %}">  <!-- modal.css 파일 링크 -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="{% static 'js/img.js' %}"></script>
+    <script>
+        
+    </script>
+    <style>
+        body {
+    font-family: 'Sunflower', sans-serif;
+    }
+    </style>
+    {% block style %}
+	{% endblock %}
+</head>
+<body>
+    <nav class="navbar fixed-top bg-body-tertiary">
+        <div class="container-fluid">
+            <header>
+                <div class="headframe" id="hf">
+                    <a class="navbar-brand" href="#">
+                        <img src="{% static 'images\safety.png'%}" alt="안전" width="50" heigth="50" class="d-inline-block align-text-top">
+                        안전 이상무
+                    </a>
+                    <div class="name" >
+                        {{ user.username|slice:":1" }}**님
+                    </div>
+                </div>
+            </header>
+        </div>
+    </nav>
+    
+    
+    <nav class="navbar fixed-bottom bg-body-tertiary">
+        <div class="container-fluid">
+            <footer>     
+                <div class="frame">                    
+                    <div>
+                        <a href="{% url 'detectmodel:index' %}" class="nav-link">
+                            <img class="nav-image" src="{% static 'images\home.png'%}" alt="홈" />
+                        </a>
+                    </div>
+                    <div>
+                    
+                            <img class="nav-image" src="{% static 'images\camera.png'%}" alt="카메라" id="DetectImage"/ >
+                        </a>
+                    </div>
+                    <div>
+                        {% if user.role == 'worker' %}
+                            <img class="nav-image" src="{% static 'images\checklist.png'%}" alt="체크" onclick="showToast()"/>
+                        {% elif user.role == 'admin' %}
+                            <a href="{% url 'showreport:checklist_board' %}" class="nav-link">
+                                <img class="nav-image" src="{% static 'images\checklist.png'%}" alt="체크"/>
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a href="{% url 'communities:index' %}" class="nav-link">
+                            <img class="nav-image" src="{% static 'images\notice.png'%}" alt="공지사항" />
+                        </a>
+                    </div>
+                    <div>
+                        <!-- 프로필 이미지 -->
+                        <img class="nav-image" src="{% static 'images/userimage.png' %}" alt="Your Image" id="profileImage">
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </nav>
+    <div id="detectModal" class="modal">
+        <div class="modal-content-file">
+            <span class="close" onclick="closeModals()">&times;</span>
+    
+            <form method="post" enctype="multipart/form-data" action='{% url 'detectmodel:danger_post' %}' class='preview-image'>
+                {% csrf_token %}
+                <div class='logo'>
+                    <img src="{% static 'images\safety.png'%}" alt="안전" width="50" heigth="50" class="d-inline-block align-text-top" style='margin-bottom:10px;' id='logo'>
+                    <label for='logo' ><h1 style='font-size:30px;'>안전 이상무</h1></label>
+                </div>
+                <div class='submitbox bs4-submits'>
+                    <input type="text" name="area" placeholder='장소' maxlength="20" required id="id_area" class='area'>
+                    <input type="submit" class='submits' value = '제    출'></button>
+                </div>
+                <div class="filebox bs3-primary">
+                    <input class="upload-name" value="파일선택" disabled='disabled'>
+
+                    <label for="id_image">업로드</label> 
+                    <input type="file" id="id_image" name='image' required accept="image/*" class='upload-img'>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        var imgTarget = $('.preview-image .upload-img');
+
+    imgTarget.on('change', function(){
+        var parent = $(this).parent();
+        parent.children('.upload-display').remove();
+
+        if(window.FileReader){
+            if (!$(this)[0].files[0].type.match(/image\//)) return;
+            
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                parent.append('<div class="upload-display"><div class="upload-thumb-wrap"><img src="'+src+'" class="upload-thumb"></div></div>');
+            }
+            reader.readAsDataURL($(this)[0].files[0]);
+        }
+
+        else {
+            $(this)[0].select();
+            $(this)[0].blur();
+            var imgSrc = document.selection.createRange().text;
+            parent.append('<div class="upload-display"><div class="upload-thumb-wrap"><img class="upload-thumb"></div></div>');
+            var img = $(this).siblings('.upload-display').find('img');
+            img[0].style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enable='true',sizingMethod='scale',src=\""+imgSrc+"\")";        
+        }
+    });
+</script>
+      <!-- 모달 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+
+            <div>
+                <h2>안녕하세요, {{ user.username }}님</h2>
+            </div>
+
+            <!-- 전화번호 정보 -->
+            <div id="companyInfo">
+                <img src="{% static 'images/phone.png' %}" alt="phone" id="companyImage">
+                <h4>전화번호: {{ user.phone_number }}</h4>
+            </div>
+
+            <!-- 회사 정보 -->
+            <div id="companyInfo">
+                <img src="{% static 'images/company.png' %}" alt="company" id="companyImage">
+                <h4>회사 : {{ user.company }}</h4>
+            </div>
+
+            <!-- 근무유형 정보 -->
+            <div id="companyInfo">
+                <img src="{% static 'images/role.png' %}" alt="role" id="companyImage">
+                {% if user.role == 'worker' %}
+                    <h4>근무유형 : 근무자</h4>
+                {% else %}
+                    <h4>근무유형 : 관리자</h4>
+                {% endif %}
+            </div>
+
+            <!-- 구분선 -->
+            <hr>
+
+            <!-- 로그아웃 링크 -->
+            <div class="logout-link">
+                <a href="{% url 'accounts:logout' %}" >로그아웃</a>
+            </div>
+        </div>
+    </div>
+
+    {% block content %}
+	{% endblock %}
+    
+      <script>
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            var currentPage = window.location.pathname;
+                                                                                                                      
+                                                                                                                    
+            if(currentPage === '/guardsite/templates/base.html') {
+                document.querySelector("a[href='base.html'] .nav-image").classList.add("current-page");
+            } else if(currentPage === '/guardsite/templates/camera-page-url.html') {
+                document.querySelector("a[href='camera-page-url.html'] .nav-image").classList.add("current-page");
+            } else if(currentPage === '/guardsite/templates/check.html') {
+                document.querySelector("a[href='check.html'] .nav-image").classList.add("current-page");
+            } else if(currentPage === '/guardsite/templates/notice.html') {
+                document.querySelector("a[href='notice.html'] .nav-image").classList.add("current-page");
+            } else if(currentPage === '/guardsite/templates/user.html') {
+                document.querySelector("a[href='user.html'] .nav-image").classList.add("current-page");
+            }                                                                                                              
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+    <script>
+        
+        document.getElementById('DetectImage').onclick = function() {
+            document.getElementById('detectModal').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // 추가된 부분
+          }
+          // 모달 닫기
+        function closeModals() {
+            document.getElementById('detectModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // 추가된 부분
+          }
+          // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('detectModal')) {
+              closeModals();
+            }
+          }
+
+        // 프로필 이미지 클릭 시 모달 열기
+        document.getElementById('profileImage').onclick = function() {
+          document.getElementById('myModal').style.display = 'block';
+          document.body.style.overflow = 'hidden'; // 추가된 부분
+        }
+      
+        // 모달 닫기
+        function closeModal() {
+          document.getElementById('myModal').style.display = 'none';
+          document.body.style.overflow = 'auto'; // 추가된 부분
+        }
+      
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+          if (event.target == document.getElementById('myModal')) {
+            closeModal();
+          }
+        }
+        
+    </script>
+
+    <script>
+        function showToast() {
+            // 여기에 토스트 메시지를 표시하는 JavaScript 코드 작성
+            alert('접근 권한이 없습니다');
+        }
+    </script>
+
+    {% block script %}
+	{% endblock %}
+</body>
+</html>

@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bulletin Board</title>
+    
+    <style>
+.contentarea{
+          height:250px;
+        }
+.delete-button{
+          justify-content: space-evenly;
+          
+          
+
+          
+        }
+.submit-button {
+    border-radius:20px;
+    padding: 10px 30px;
+    font-size: 1.0em;
+    background-color:#ffffff;
+    border: 1px solid #719FD6;
+}
+    </style>
+</head>
+<script src="https://cdn.tailwindcss.com"></script>
+<body class="bg-gray-100">
+
+
+    <div class="container mx-auto p-8 mt-20">
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-6">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="title">
+                      <h2 class="text-lg font-semibold mb-2">{{ notice.title }}</h2>
+                    </label>
+                    <p></p>
+                </div>
+                <hr style="margin-top:10px; margin-bottom:10px;">
+                <div class="mb-6 contentarea">
+                  <p>{{ notice.content }}</p>
+                </div>
+
+                {% if user.role == 'admin' %}
+                <hr style="margin-top:10px; margin-bottom:10px;">
+                <div class="flex items-center justify-between">
+                    <button class="submit-button" type="button">
+                      <a  href="{% url 'communities:update' notice.pk %}">수정</a>
+                    </button>
+                    
+                    <button class="submit-button" type="button">
+                      <form action="{% url 'communities:delete' notice.pk %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                            <input type="submit" value="삭제", onclick="return confirm('진짜로 지울래?')" >
+                      </form>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+            <hr style="margin-top:10px; margin-bottom:10px;">
+            <div class="mb-6">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="new-title">
+                        댓글
+                    </label>
+                    {% for comment in comments %}
+                    
+                    <div class="flex items-center justify-between">
+                    
+                      <div>
+                        <p>{{ comment.user }}: {{ comment.content }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ {{ comment.created_at|date:"Y.m.d H:i" }} ]</p>
+                      </div>
+                          {% if request.user == comment.user %}
+                        <form action="{% url 'communities:comments_delete' notice.pk comment.pk %}" method="POST" >
+                          {% csrf_token %}
+                          
+                          <button><input type="submit" value="X" style="color:red ;"></button>
+                          
+                        </form>
+                      
+                      {% endif %}
+                    
+                    </div>
+                  {% empty %}
+                    <!--댓글 없을때 대비용. 현재는 비워둠-->
+                  {% endfor %}
+                  <hr style="margin-top:10px; margin-bottom:10px;">
+                  <form action="{% url 'communities:comments_create' notice.pk %}" method="POST">
+                    {% csrf_token %}
+                      <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="new-content">
+                            댓글 작성
+                        </label>
+                        <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="comments" placeholder="댓글쓰기" name='content'></textarea>
+                      </div>
+                    <div class="flex items-center justify-between">
+                      <button class="submit-button" type="button">
+                      <a href="{% url 'communities:index' %}" >목록</a></button>
+                    <input class="submit-button" type="submit"
+                          value='댓글달기'/>
+                      
+                  </div>
+              </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        
+    </script>
+
+{%endblock%}
+</body>
+<style>
+#corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  right: 0;
+  bottom: 0;
+  cursor: nwse-resize;
+}
+</style>
+<div id="corner"></div>
+<script>
+  const corner = document.getElementById('corner');
+  function resizeWindow(e) {
+    const size = {
+      width: Math.max(50,Math.floor(e.clientX+5)),
+      height: Math.max(50,Math.floor(e.clientY+5))
+    };
+    parent.postMessage( { pluginMessage: { type: 'resize', size: size }}, '*');
+  }
+  corner.onpointerdown = (e)=>{
+    corner.onpointermove = resizeWindow;
+    corner.setPointerCapture(e.pointerId);
+  };
+  corner.onpointerup = (e)=>{
+    corner.onpointermove = null;
+    corner.releasePointerCapture(e.pointerId);
+  };
+</script></html>

@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+
+
+.container img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+<div class="container">
+        
+          <div>        
+          <img class="mainimage" src="{% static 'images\mainimage3.png'%}" alt="Card image cap" >
+          
+          
+          
+          </div>
+</div>
+
+{% endblock %}
